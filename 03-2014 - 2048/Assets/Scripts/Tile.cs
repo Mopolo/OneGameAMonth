@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Runtime.InteropServices;
 using UnityEngine;
 using System.Collections;
 using Random = System.Random;
@@ -18,28 +19,29 @@ public class Tile : MonoBehaviour
 	
 	}
 
-    public int MoveDown(GameObject[,] grid, GameObject[] tiles)
+    public int MoveDown(GameObject[,] grid, GameObject[] tiles, GameObject layer)
     {
         int originX = Util.GetTilePositionX(transform.position.x);
         int originY = Util.GetTilePositionY(transform.position.y);
 
-        int downY = originY + 1;
-        int downX = originX;
+        int newY = originY + 1;
+        int newX = originX;
 
-        if (grid[downX, downY] != null)
+        if (grid[newX, newY] != null)
         {
-            int downValue = grid[downX, downY].GetComponent<Tile>().Value;
+            int downValue = grid[newX, newY].GetComponent<Tile>().Value;
             if (downValue == Value)
             {
                 Value = downValue + Value;
 
-                Destroy(grid[downX, downY].gameObject);
+                Destroy(grid[newX, newY].gameObject);
 
-                grid[downX, downY] =
+                grid[newX, newY] =
                     (GameObject)
                         Instantiate(tiles.First(t => t.name == "Tile " + Value),
-                            new Vector3(Util.GetTilePositionX(downX), Util.GetTilePositionY(downY), -2),
+                            new Vector3(Util.GetTilePositionX(newX), Util.GetTilePositionY(newY), -2),
                             new Quaternion());
+                grid[newX, newY].transform.parent = layer.transform;
 
                 Destroy(gameObject);
 
@@ -50,12 +52,12 @@ public class Tile : MonoBehaviour
         {
             GameObject aux = grid[originX, originY];
             grid[originX, originY] = null;
-            grid[downX, downY] = aux;
-            aux.transform.position = new Vector3(Util.GetTilePositionX(downX), Util.GetTilePositionY(downY), -2);
+            grid[newX, newY] = aux;
+            aux.transform.position = new Vector3(Util.GetTilePositionX(newX), Util.GetTilePositionY(newY), -2);
 
-            if (downY < 3)
+            if (newY < 3)
             {
-                return MoveDown(grid, tiles);
+                return MoveDown(grid, tiles, layer);
             }
 
             return 1;
