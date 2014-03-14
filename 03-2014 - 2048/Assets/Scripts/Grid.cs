@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using System.Collections;
@@ -89,22 +90,40 @@ public class Grid : MonoBehaviour
                 int x, y;
 
                 int[,] tests = new int[4, 4];
+                List<int[]> possibilities = new List<int[]>();
 
                 for (int i = 0; i < 4; i++)
                 {
                     for (int j = 0; j < 4; j++)
                     {
-                        if (_grid[i, j] != null)
+                        if (_grid[i, j] == null)
                         {
-                            tests[i, j] = 1;
+                            tests[i, j] = 0;
+                            possibilities.Add(new[] { i, j });
                         }
                         else
                         {
-                            tests[i, j] = 0;
+                            tests[i, j] = 1;
                         }
                     }
                 }
+                Debug.Log(possibilities.Count);
 
+                int rand = _random.Next(0, possibilities.Count);
+                x = possibilities.ElementAt(rand)[0];
+                y = possibilities.ElementAt(rand)[1];
+
+                /*Debug.Log("=====AVANT=====");
+                for (int i = 0; i < 4; i++)
+                {
+                    for (int j = 0; j < 4; j++)
+                    {
+                        Debug.Log("tests[" + i + ", " + j + "] = " + tests[i, j]);
+                    }
+                }
+
+                Debug.Log(CountTotal(tests));
+                int a = 0;
                 do
                 {
                     x = _random.Next(0, 4);
@@ -112,9 +131,25 @@ public class Grid : MonoBehaviour
                     tests[x, y] = 1;
                     //Debug.Log(CountTotal(tests));
                     //Debug.Log(_grid[x, y]);
-                } while (CountTotal(tests) < 16 || _grid[x, y] != null);
+                    a++;
+                    if (_grid[x, y] == null)
+                    {
+                        Debug.Log("QSDFGHJKLM");
+                    }
+                } while (CountTotal(tests) < 16 || _grid[x, y] == null);
+                Debug.Log("A: " + a);
+                Debug.Log("=====APRES=====");
+                for (int i = 0; i < 4; i++)
+                {
+                    for (int j = 0; j < 4; j++)
+                    {
+                        Debug.Log("tests[" + i + ", " + j + "] = " + tests[i, j]);
+                    }
+                }
 
-                if (CountTotal(tests) == 16)
+                Debug.Log(CountTotal(tests));*/
+
+                if (possibilities.Count == 0)
                 {
                     // GAMEOVER
                     Debug.Log("GAMEOVER");
