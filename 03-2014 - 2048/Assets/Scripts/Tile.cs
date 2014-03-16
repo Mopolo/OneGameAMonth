@@ -27,12 +27,50 @@ public class Tile : MonoBehaviour
         int newY = originY + 1;
         int newX = originX;
 
+        return Move("down", originX, originY, newX, newY, grid, tiles, layer);
+    }
+
+    public int MoveRight(GameObject[,] grid, GameObject[] tiles, GameObject layer)
+    {
+        int originX = Util.GetTilePositionX(transform.position.x);
+        int originY = Util.GetTilePositionY(transform.position.y);
+
+        int newY = originY;
+        int newX = originX + 1;
+
+        return Move("right", originX, originY, newX, newY, grid, tiles, layer);
+    }
+
+    public int MoveUp(GameObject[,] grid, GameObject[] tiles, GameObject layer)
+    {
+        int originX = Util.GetTilePositionX(transform.position.x);
+        int originY = Util.GetTilePositionY(transform.position.y);
+
+        int newY = originY - 1;
+        int newX = originX;
+
+        return Move("up", originX, originY, newX, newY, grid, tiles, layer);
+    }
+
+    public int MoveLeft(GameObject[,] grid, GameObject[] tiles, GameObject layer)
+    {
+        int originX = Util.GetTilePositionX(transform.position.x);
+        int originY = Util.GetTilePositionY(transform.position.y);
+
+        int newY = originY;
+        int newX = originX - 1;
+
+        return Move("left", originX, originY, newX, newY, grid, tiles, layer);
+    }
+
+    public int Move(string direction, int originX, int originY, int newX, int newY, GameObject[,] grid, GameObject[] tiles, GameObject layer)
+    {
         if (grid[newX, newY] != null)
         {
-            int downValue = grid[newX, newY].GetComponent<Tile>().Value;
-            if (downValue == Value)
+            int otherValue = grid[newX, newY].GetComponent<Tile>().Value;
+            if (otherValue == Value)
             {
-                Value = downValue + Value;
+                Value = otherValue + Value;
 
                 Destroy(grid[newX, newY].gameObject);
 
@@ -55,11 +93,34 @@ public class Tile : MonoBehaviour
             grid[newX, newY] = aux;
             aux.transform.position = new Vector3(Util.GetTilePositionX(newX), Util.GetTilePositionY(newY), -2);
 
-            if (newY < 3)
+            switch (direction)
             {
-                return MoveDown(grid, tiles, layer);
+                case "down":
+                    if (newY < 3)
+                    {
+                        return MoveDown(grid, tiles, layer);
+                    }
+                    break;
+                case "right":
+                    if (newX < 3)
+                    {
+                        return MoveRight(grid, tiles, layer);
+                    }
+                    break;
+                case "up":
+                    if (newY > 0)
+                    {
+                        return MoveUp(grid, tiles, layer);
+                    }
+                    break;
+                case "left":
+                    if (newX > 0)
+                    {
+                        return MoveLeft(grid, tiles, layer);
+                    }
+                    break;
             }
-
+            
             return 1;
         }
 

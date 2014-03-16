@@ -18,33 +18,22 @@ public class Grid : MonoBehaviour
         _grid = new GameObject[4, 4];
         _random = new Random();
 
+        // First of all we create an empty gameObject to put all
+        // generated gameObjects in it.
+        // This way we only have to delete this one to delete them all
+        // each time a new game is launched
         var tmp = GameObject.Find("LoadedObjects");
         Destroy(tmp);
         _layerObject = new GameObject("LoadedObjects");
         
-        /*
-	    int x1 = 0;
-	    int y1 = 0;
-	    int x2 = 0;
-	    int y2 = 2;
-        _grid[x1, y1] =
-            (GameObject)
-                Instantiate(Tiles.First(t => t.name == "Tile 2"), new Vector3(Util.GetTilePositionX(x1), Util.GetTilePositionY(y1), -2),
-                    new Quaternion());
-
-        _grid[x2, y2] =
-            (GameObject)
-                Instantiate(Tiles.First(t => t.name == "Tile 2"), new Vector3(Util.GetTilePositionX(x2), Util.GetTilePositionY(y2), -2),
-                    new Quaternion());
-        //*/
-
-        //*
 	    int x1 = _random.Next(0, 4);
 	    int y1 = _random.Next(0, 4);
 
+        // The two first tiles can be 2 or 4
         string tile1 = "Tile " + _random.Next(1, 3) * 2;
         string tile2 = "Tile " + _random.Next(1, 3) * 2;
 
+        // We randomly place a tile anywhere on the grid
 	    _grid[x1, y1] =
 	        (GameObject)
 	            Instantiate(Tiles.First(t => t.name == tile1), new Vector3(Util.GetTilePositionX(x1), Util.GetTilePositionY(y1), -2),
@@ -54,6 +43,7 @@ public class Grid : MonoBehaviour
 	    int x2;
 	    int y2;
 
+        // And then we randomly place a second tile anywhere but on the first
 	    do
 	    {
             x2 = _random.Next(0, 4);
@@ -65,121 +55,175 @@ public class Grid : MonoBehaviour
 	            Instantiate(Tiles.First(t => t.name == tile2), new Vector3(Util.GetTilePositionX(x2), Util.GetTilePositionY(y2), -2),
                     new Quaternion());
         _grid[x2, y2].transform.parent = _layerObject.transform;
-        //*/
 	}
-	
-	void Update () {
+
+    void Update()
+    {
+        int movements = 0;
+        string direction = null;
+
         if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S))
         {
-            int mouvements = 0;
+            direction = "down";
+        }
+        else if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D))
+        {
+            direction = "right";
+        }
+        else if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.Z))
+        {
+            direction = "up";
+        }
+        else if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.Q))
+        {
+            direction = "left";
+        }
 
-	        for (int j = 2; j >= 0; j--)
-	        {
-	            for (int i = 0; i < 4; i++)
-	            {
-	                if (_grid[i, j] != null)
-	                {
-	                    var aux = _grid[i, j].GetComponent<Tile>();
-                        if (aux != null) mouvements+= aux.MoveDown(_grid, Tiles, _layerObject);
-	                }
-	            }
-	        }
-
-            if (mouvements > 0)
+        // TODO faire une boucle par direction
+        if (direction != null)
+        {
+            switch (direction)
             {
-                int x, y;
-
-                int[,] tests = new int[4, 4];
-                List<int[]> possibilities = new List<int[]>();
-
-                for (int i = 0; i < 4; i++)
-                {
-                    for (int j = 0; j < 4; j++)
+                case "down":
+                    for (int j = 2; j >= 0; j--)
                     {
-                        if (_grid[i, j] == null)
+                        for (int i = 0; i < 4; i++)
                         {
-                            tests[i, j] = 0;
-                            possibilities.Add(new[] { i, j });
-                        }
-                        else
-                        {
-                            tests[i, j] = 1;
+                            if (_grid[i, j] != null)
+                            {
+                                var aux = _grid[i, j].GetComponent<Tile>();
+                                if (aux != null)
+                                {
+                                    if (j < 3) movements += aux.MoveDown(_grid, Tiles, _layerObject);
+                                }
+                            }
                         }
                     }
-                }
-                Debug.Log(possibilities.Count);
+                    break;
+                
+                case "right":
+                    for (int i = 2; i >= 0; i--)
+                    {
+                        for (int j = 0; j < 4; j++)
+                        {
+                            if (_grid[i, j] != null)
+                            {
+                                var aux = _grid[i, j].GetComponent<Tile>();
+                                if (aux != null)
+                                {
+                                    if (i < 3) movements += aux.MoveRight(_grid, Tiles, _layerObject);
+                                }
+                            }
+                        }
+                    }
+                    break;
 
-                int rand = _random.Next(0, possibilities.Count);
-                x = possibilities.ElementAt(rand)[0];
-                y = possibilities.ElementAt(rand)[1];
+                case "up":
+                    for (int j = 0; j < 3; j++)
+                    {
+                        for (int i = 1; i < 3; i++)
+                        {
+                            if (_grid[i, j] != null)
+                            {
+                                var aux = _grid[i, j].GetComponent<Tile>();
+                                if (aux != null)
+                                {
+                                    if (j > 0) movements += aux.MoveUp(_grid, Tiles, _layerObject);
+                                }
+                            }
+                        }
+                    }
+                    break;
 
-                /*Debug.Log("=====AVANT=====");
+                case "left":
+                    for (int i = 3; i >= 0; i--)
+                    {
+                        for (int j = 0; j < 3; j++)
+                        {
+                            if (_grid[i, j] != null)
+                            {
+                                var aux = _grid[i, j].GetComponent<Tile>();
+                                if (aux != null)
+                                {
+                                    movements += aux.MoveLeft(_grid, Tiles, _layerObject);
+                                }
+                            }
+                        }
+                    }
+                    break;
+            }
+
+            /*
+            for (int j = 2; j >= 0; j--)
+            {
                 for (int i = 0; i < 4; i++)
                 {
-                    for (int j = 0; j < 4; j++)
+                    if (_grid[i, j] != null)
                     {
-                        Debug.Log("tests[" + i + ", " + j + "] = " + tests[i, j]);
+                        var aux = _grid[i, j].GetComponent<Tile>();
+                        if (aux != null)
+                        {
+                            switch (direction)
+                            {
+                                case "down":
+                                    if (j < 3) movements += aux.MoveDown(_grid, Tiles, _layerObject);
+                                    break;
+                                case "right":
+                                    if (i < 3) movements += aux.MoveRight(_grid, Tiles, _layerObject);
+                                    break;
+                                case "up":
+                                    movements += aux.MoveUp(_grid, Tiles, _layerObject);
+                                    break;
+                                case "left":
+                                    movements += aux.MoveLeft(_grid, Tiles, _layerObject);
+                                    break;
+                            }
+                        }
                     }
                 }
+            }
+            //*/
 
-                Debug.Log(CountTotal(tests));
-                int a = 0;
-                do
-                {
-                    x = _random.Next(0, 4);
-                    y = _random.Next(0, 4);
-                    tests[x, y] = 1;
-                    //Debug.Log(CountTotal(tests));
-                    //Debug.Log(_grid[x, y]);
-                    a++;
-                    if (_grid[x, y] == null)
-                    {
-                        Debug.Log("QSDFGHJKLM");
-                    }
-                } while (CountTotal(tests) < 16 || _grid[x, y] == null);
-                Debug.Log("A: " + a);
-                Debug.Log("=====APRES=====");
-                for (int i = 0; i < 4; i++)
-                {
-                    for (int j = 0; j < 4; j++)
-                    {
-                        Debug.Log("tests[" + i + ", " + j + "] = " + tests[i, j]);
-                    }
-                }
-
-                Debug.Log(CountTotal(tests));*/
-
-                if (possibilities.Count == 0)
-                {
-                    // GAMEOVER
-                    Debug.Log("GAMEOVER");
-                }
-                else
-                {
-                    string tile1 = "Tile " + _random.Next(1, 3)*2;
-                    _grid[x, y] =
-                        (GameObject)
-                            Instantiate(Tiles.First(t => t.name == tile1),
-                                new Vector3(Util.GetTilePositionX(x), Util.GetTilePositionY(y), -2),
-                                new Quaternion());
-                    _grid[x, y].transform.parent = _layerObject.transform;
-                }
+            if (movements > 0)
+            {
+                LastStepAfterMovements();
             }
         }
 	}
 
-    private int CountTotal(int[,] tests)
+    private void LastStepAfterMovements()
     {
-        int total = 0;
+        List<int[]> possibilities = new List<int[]>();
 
         for (int i = 0; i < 4; i++)
         {
             for (int j = 0; j < 4; j++)
             {
-                total += tests[i, j];
+                if (_grid[i, j] == null)
+                {
+                    possibilities.Add(new[] {i, j});
+                }
             }
         }
 
-        return total;
+        int rand = _random.Next(0, possibilities.Count);
+        int x = possibilities.ElementAt(rand)[0];
+        int y = possibilities.ElementAt(rand)[1];
+
+        if (possibilities.Count == 0)
+        {
+            // GAMEOVER
+            Debug.Log("GAMEOVER");
+        }
+        else
+        {
+            string tile1 = "Tile " + _random.Next(1, 3)*2;
+            _grid[x, y] =
+                (GameObject)
+                    Instantiate(Tiles.First(t => t.name == tile1),
+                        new Vector3(Util.GetTilePositionX(x), Util.GetTilePositionY(y), -2),
+                        new Quaternion());
+            _grid[x, y].transform.parent = _layerObject.transform;
+        }
     }
 }
