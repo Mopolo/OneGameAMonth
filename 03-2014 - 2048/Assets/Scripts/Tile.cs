@@ -8,6 +8,7 @@ public class Tile : MonoBehaviour
 {
     public int Value;
     private Random _random;
+    public bool Moved = false;
 
 	// Use this for initialization
 	void Start () {
@@ -68,7 +69,7 @@ public class Tile : MonoBehaviour
         if (grid[newX, newY] != null)
         {
             int otherValue = grid[newX, newY].GetComponent<Tile>().Value;
-            if (otherValue == Value)
+            if (otherValue == Value && grid[newX, newY].GetComponent<Tile>().Moved == false)
             {
                 Value = otherValue + Value;
 
@@ -80,8 +81,11 @@ public class Tile : MonoBehaviour
                             new Vector3(Util.GetTilePositionX(newX), Util.GetTilePositionY(newY), -2),
                             new Quaternion());
                 grid[newX, newY].transform.parent = layer.transform;
+                grid[newX, newY].GetComponent<Tile>().Moved = true;
 
                 Destroy(gameObject);
+
+                grid[originX, originY] = null;
 
                 return 1;
             }

@@ -119,9 +119,9 @@ public class Grid : MonoBehaviour
                     break;
 
                 case "up":
-                    for (int j = 0; j < 3; j++)
+                    for (int j = 1; j < 4; j++)
                     {
-                        for (int i = 1; i < 3; i++)
+                        for (int i = 0; i < 4; i++)
                         {
                             if (_grid[i, j] != null)
                             {
@@ -136,9 +136,9 @@ public class Grid : MonoBehaviour
                     break;
 
                 case "left":
-                    for (int i = 3; i >= 0; i--)
+                    for (int i = 1; i < 4; i++)
                     {
-                        for (int j = 0; j < 3; j++)
+                        for (int j = 0; j < 4; j++)
                         {
                             if (_grid[i, j] != null)
                             {
@@ -199,6 +199,14 @@ public class Grid : MonoBehaviour
         {
             for (int j = 0; j < 4; j++)
             {
+                try
+                {
+                    _grid[i, j].GetComponent<Tile>().Moved = false;
+                }
+                catch (Exception)
+                {
+                    
+                }
                 if (_grid[i, j] == null)
                 {
                     possibilities.Add(new[] {i, j});
