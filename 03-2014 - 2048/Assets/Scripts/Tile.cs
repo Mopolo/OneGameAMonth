@@ -87,9 +87,9 @@ public class Tile : MonoBehaviour
                 grid[newX, newY].transform.parent = layer.transform;
                 grid[newX, newY].GetComponent<Tile>().Moved = true;
 
-                Destroy(gameObject);
-
                 grid[originX, originY] = null;
+
+                Destroy(gameObject);
 
                 return 1;
             }

@@ -8,6 +8,7 @@ using Random = System.Random;
 public class Grid : MonoBehaviour
 {
     public GameObject[] Tiles;
+    public GameObject GameOverSprite;
 
     // The values grid
     private GameObject[,] _grid;
@@ -16,6 +17,8 @@ public class Grid : MonoBehaviour
 
 	public void LaunchNewGame() {
         GameObject.Find("TextInfosGUI").GetComponent<Score>().ResetPoints();
+
+        GameOverSprite.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 0f);
 
         _grid = new GameObject[4, 4];
         _random = new Random();
@@ -164,12 +167,90 @@ public class Grid : MonoBehaviour
             {
                 LastStepAfterMovements();
             }
+
+            if (IsItGameOver())
+            {
+                GameOverSprite.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, .8f);
+            }
         }
 	}
 
+    private bool IsItGameOver()
+    {
+        List<int[]> emptyPossibilities = new List<int[]>();
+
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                if (_grid[i, j] == null)
+                {
+                    emptyPossibilities.Add(new[] { i, j });
+                }
+            }
+        }
+
+        // if there is no more empty cells, it may be a gameover
+        if (emptyPossibilities.Count == 0)
+        {
+            // we have to check if there is no more possible combinations before
+            // calling a gameover
+            for (int i = 0; i < 4; i++)
+            {
+                for (int j = 0; j < 4; j++)
+                {
+                    GameObject top = null, right = null, bottom = null, left = null;
+                    try
+                    {
+                        top = _grid[i, j - 1];
+                        if (_grid[i, j].GetComponent<Tile>().Value == top.GetComponent<Tile>().Value)
+                        {
+                            return false;
+                        }
+                    }
+                    catch (Exception e) { }
+
+                    try
+                    {
+                        right = _grid[i + 1, j];
+                        if (_grid[i, j].GetComponent<Tile>().Value == right.GetComponent<Tile>().Value)
+                        {
+                            return false;
+                        }
+                    }
+                    catch (Exception e) { }
+
+                    try
+                    {
+                        bottom = _grid[i, j + 1];
+                        if (_grid[i, j].GetComponent<Tile>().Value == bottom.GetComponent<Tile>().Value)
+                        {
+                            return false;
+                        }
+                    }
+                    catch (Exception e) { }
+
+                    try
+                    {
+                        left = _grid[i - 1, j];
+                        if (_grid[i, j].GetComponent<Tile>().Value == left.GetComponent<Tile>().Value)
+                        {
+                            return false;
+                        }
+                    }
+                    catch (Exception e) { }
+                }
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
     private void LastStepAfterMovements()
     {
-        List<int[]> possibilities = new List<int[]>();
+        List<int[]> emptyPossibilities = new List<int[]>();
 
         for (int i = 0; i < 4; i++)
         {
@@ -185,22 +266,17 @@ public class Grid : MonoBehaviour
                 }
                 if (_grid[i, j] == null)
                 {
-                    possibilities.Add(new[] {i, j});
+                    emptyPossibilities.Add(new[] {i, j});
                 }
             }
         }
 
-        int rand = _random.Next(0, possibilities.Count);
-        int x = possibilities.ElementAt(rand)[0];
-        int y = possibilities.ElementAt(rand)[1];
-        Debug.Log(possibilities.Count);
-        if (possibilities.Count == 0)
+        if (emptyPossibilities.Count > 0)
         {
-            // GAMEOVER
-            Debug.Log("GAMEOVER");
-        }
-        else
-        {
+            int rand = _random.Next(0, emptyPossibilities.Count);
+            int x = emptyPossibilities.ElementAt(rand)[0];
+            int y = emptyPossibilities.ElementAt(rand)[1];
+
             string tile1 = "Tile " + _random.Next(1, 3)*2;
             _grid[x, y] =
                 (GameObject)
