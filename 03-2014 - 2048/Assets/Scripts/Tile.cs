@@ -7,12 +7,15 @@ using Random = System.Random;
 public class Tile : MonoBehaviour
 {
     public int Value;
-    private Random _random;
     public bool Moved = false;
+
+    private Random _random;
+    private Score _score;
 
 	// Use this for initialization
 	void Start () {
         _random = new Random();
+        _score = GameObject.Find("TextInfosGUI").GetComponent<Score>();
 	}
 	
 	// Update is called once per frame
@@ -72,6 +75,7 @@ public class Tile : MonoBehaviour
             if (otherValue == Value && grid[newX, newY].GetComponent<Tile>().Moved == false)
             {
                 Value = otherValue + Value;
+                _score.AddPoints(Value);
 
                 Destroy(grid[newX, newY].gameObject);
 

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Util
 {
-    private static float[] _x = { -1.65f, -0.55f, 0.55f, 1.65f };
+    private static float[] _x = { -0.65f, 0.45f, 1.55f, 2.65f };
     private static float[] _y = { 1.65f, 0.55f, -0.55f, -1.65f };
 
     public static int GetTilePositionX(float x)

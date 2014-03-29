@@ -15,6 +15,8 @@ public class Grid : MonoBehaviour
     private GameObject _layerObject;
 
 	public void LaunchNewGame() {
+        GameObject.Find("TextInfosGUI").GetComponent<Score>().ResetPoints();
+
         _grid = new GameObject[4, 4];
         _random = new Random();
 
@@ -157,37 +159,6 @@ public class Grid : MonoBehaviour
                     }
                     break;
             }
-
-            /*
-            for (int j = 2; j >= 0; j--)
-            {
-                for (int i = 0; i < 4; i++)
-                {
-                    if (_grid[i, j] != null)
-                    {
-                        var aux = _grid[i, j].GetComponent<Tile>();
-                        if (aux != null)
-                        {
-                            switch (direction)
-                            {
-                                case "down":
-                                    if (j < 3) movements += aux.MoveDown(_grid, Tiles, _layerObject);
-                                    break;
-                                case "right":
-                                    if (i < 3) movements += aux.MoveRight(_grid, Tiles, _layerObject);
-                                    break;
-                                case "up":
-                                    movements += aux.MoveUp(_grid, Tiles, _layerObject);
-                                    break;
-                                case "left":
-                                    movements += aux.MoveLeft(_grid, Tiles, _layerObject);
-                                    break;
-                            }
-                        }
-                    }
-                }
-            }
-            //*/
 
             if (movements > 0)
             {
