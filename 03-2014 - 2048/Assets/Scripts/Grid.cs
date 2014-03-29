@@ -14,7 +14,7 @@ public class Grid : MonoBehaviour
     private Random _random;
     private GameObject _layerObject;
 
-	void OnMouseDown() {
+	public void LaunchNewGame() {
         _grid = new GameObject[4, 4];
         _random = new Random();
 
@@ -59,6 +59,11 @@ public class Grid : MonoBehaviour
 
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.N))
+        {
+            LaunchNewGame();
+        }
+
         int movements = 0;
         string direction = null;
 
