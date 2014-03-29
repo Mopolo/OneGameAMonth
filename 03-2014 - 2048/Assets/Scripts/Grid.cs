@@ -193,7 +193,7 @@ public class Grid : MonoBehaviour
         int rand = _random.Next(0, possibilities.Count);
         int x = possibilities.ElementAt(rand)[0];
         int y = possibilities.ElementAt(rand)[1];
-
+        Debug.Log(possibilities.Count);
         if (possibilities.Count == 0)
         {
             // GAMEOVER
