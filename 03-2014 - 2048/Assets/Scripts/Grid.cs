@@ -89,7 +89,6 @@ public class Grid : MonoBehaviour
             direction = "left";
         }
 
-        // TODO faire une boucle par direction
         if (direction != null)
         {
             switch (direction)
