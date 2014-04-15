@@ -8,9 +8,13 @@ public class TerrainGenerator : MonoBehaviour
     public List<GameObject> VagueTransforms;
     public int CurrentVagues = 0;
 
+    private List<GameObject> _vagues;
+    private Random _random;
+
 	void Start ()
 	{
-	
+	    _random = new Random();
+        _vagues = new List<GameObject>();
 	}
 	
 	void Update ()
@@ -23,30 +27,11 @@ public class TerrainGenerator : MonoBehaviour
 
     void GenerateVague()
     {
-        // TODO : réutiliser les vagues au lieu de les supprimer
-        var random = new Random();
-
-        float x, y;
-        x = random.Next(-70, 70) / 10f;
-        y = random.Next(60, 150) / 10f;
-
-        var vague = Instantiate(VagueTransforms[random.Next(0, 2)], new Vector3(x, y, random.Next(-5, 5)), new Quaternion()) as GameObject;
-        if (vague)
+        if (_vagues.Count < MaxVagues)
         {
-            float scale = random.Next(10, 80) / 10f;
-            vague.transform.localScale = new Vector3(scale, scale, 1f);
-            var color = vague.transform.renderer.material.color;
-            vague.transform.renderer.material.color = new Color(color.r, color.g, color.b, random.Next(1, 3)/10f);
-            
-            var movement = vague.GetComponent<Movement>();
-            if (movement)
-            {
-                movement.Direction = -transform.up;
-                movement.transform.rotation = transform.rotation;
-                movement.Speed = new Vector2(0, random.Next(1, 8));
-            }
+            var vague = Instantiate(VagueTransforms[_random.Next(0, 2)], new Vector3(0, 2, 0), new Quaternion()) as GameObject;
+            vague.GetComponent<Vague>().MoveToTop(GameManager.GetManager().Random);
+            _vagues.Add(vague);
         }
-
-        CurrentVagues++;
     }
 }
