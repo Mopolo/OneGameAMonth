@@ -46,9 +46,11 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Scripts\Entities\Fish.cs" />
+     <Compile Include="Assets\Scripts\Entities\BadFish.cs" />
+     <Compile Include="Assets\Scripts\Entities\EnnemyGenerator.cs" />
      <Compile Include="Assets\Scripts\Entities\Hero.cs" />
      <Compile Include="Assets\Scripts\Entities\Movement.cs" />
+     <Compile Include="Assets\Scripts\Entities\Shooter.cs" />
      <Compile Include="Assets\Scripts\Entities\Shot.cs" />
      <Compile Include="Assets\Scripts\Entities\TerrainGenerator.cs" />
      <Compile Include="Assets\Scripts\Entities\Vague.cs" />

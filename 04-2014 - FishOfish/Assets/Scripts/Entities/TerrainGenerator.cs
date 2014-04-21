@@ -6,7 +6,6 @@ public class TerrainGenerator : MonoBehaviour
 {
     public int MaxVagues = 10;
     public List<GameObject> VagueTransforms;
-    public int CurrentVagues = 0;
 
     private List<GameObject> _vagues;
     private Random _random;
@@ -19,10 +18,7 @@ public class TerrainGenerator : MonoBehaviour
 	
 	void Update ()
 	{
-	    if (CurrentVagues < MaxVagues)
-	    {
-	        GenerateVague();
-	    }
+	    GenerateVague();
 	}
 
     void GenerateVague()
